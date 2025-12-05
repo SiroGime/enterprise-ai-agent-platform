@@ -1,0 +1,90 @@
+# ============================
+#  Node / Backend / Frontend
+# ============================
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+dist/
+build/
+.tmp/
+.temp/
+
+# ============================
+#  Environment Variables
+# ============================
+.env
+.env.local
+.env.*.local
+*.env
+
+# ============================
+#  Logs
+# ============================
+logs
+*.log
+*.log.*
+log.txt
+nohup.out
+
+# ============================
+#  OS Generated Files
+# ============================
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# ============================
+#  IDE / Editor Folders
+# ============================
+.vscode/
+.idea/
+*.swp
+
+# ============================
+#  Testing / Coverage
+# ============================
+coverage/
+.nyc_output/
+*.lcov
+
+# ============================
+#  Cache
+# ============================
+.cache/
+.cache-loader/
+.eslintcache
+.stylelintcache
+.next/
+.astro/
+.svelte-kit/
+
+# ============================
+#  TypeScript (Future Frontend)
+# ============================
+*.tsbuildinfo
+
+# ============================
+#  Docker / CI
+# ============================
+docker-data/
+docker-volume/
+*.pid
+
+# ============================
+#  Documentation
+# ============================
+/docs/*.pdf
+/docs/*.png
+/docs/*.jpg
+
+# ============================
+#  Temporary Files
+# ============================
+temp/
+tmp/
+*.tmp
+*.bak
+*.backup
+*.old
