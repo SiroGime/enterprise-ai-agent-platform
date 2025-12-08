@@ -88,3 +88,6 @@ tmp/
 *.bak
 *.backup
 *.old
+
+
+backend/uploads/
