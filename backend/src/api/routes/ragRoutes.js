@@ -1,7 +1,8 @@
 const express = require("express");
 const router = express.Router();
-const { testRAG } = require("../controllers/ragController");
+const ragController = require("../controllers/ragController");
 
-router.get("/test", testRAG);
+router.post("/index", ragController.indexDocument);
+router.post("/query", ragController.query);
 
 module.exports = router;

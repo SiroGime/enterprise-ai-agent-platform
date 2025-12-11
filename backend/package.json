@@ -12,6 +12,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "axios": "^1.13.2",
+    "chromadb": "^3.1.6",
     "config": "^4.1.1",
     "cors": "^2.8.5",
     "docx": "^9.5.1",

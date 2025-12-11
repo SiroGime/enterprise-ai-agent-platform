@@ -11,6 +11,11 @@ build/
 .tmp/
 .temp/
 
+/chroma
+/chroma/
+chroma/
+
+
 # ============================
 #  Environment Variables
 # ============================
