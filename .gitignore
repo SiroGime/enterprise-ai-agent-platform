@@ -15,6 +15,9 @@ build/
 /chroma/
 chroma/
 
+/documents
+/documents/
+documents/
 
 # ============================
 #  Environment Variables
