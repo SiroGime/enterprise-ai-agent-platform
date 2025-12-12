@@ -1,5 +1,5 @@
-module.exports = function chunkText(text, size = 500) {
-//Divide en trozos de 500 caracteres (ajustable)
+module.exports = function chunkText(text, size = 250) {
+//Divide en trozos de 250 caracteres (ajustable)
 
   const chunks = [];
   

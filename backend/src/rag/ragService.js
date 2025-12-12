@@ -8,9 +8,18 @@ class RAGService {
     return added;
   }
 
-  async query(text, topK = 5) {
+  async query(text, topK = 3) {
     const [embedding] = await embedder.embed([text]);
-    return await vectorStore.query(embedding, topK);
+    const result = await vectorStore.query(embedding, topK);
+
+    // Normaliza salida
+    const docs = result.documents?.flat() ?? [];
+    const contextText = docs.join("\n\n");
+
+    return {
+      contextText,
+      documents: docs
+    };
   }
 }
 

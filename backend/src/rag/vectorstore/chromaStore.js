@@ -27,14 +27,13 @@ class ChromaStore {
     await this.collection.add({
       ids,
       embeddings,
-      documents: chunks,
-      metadatas: chunks.map(c => ({ length: c.length }))
+      documents: chunks
     });
 
     return ids.length;
   }
 
-  async query(queryEmbedding, topK = 5) {
+  async query(queryEmbedding, topK = 2) {
     await this.init();
 
     return await this.collection.query({
