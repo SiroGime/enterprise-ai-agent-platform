@@ -2,6 +2,9 @@ const DocumentIngestor = require("../../core/ingestion/DocumentIngestor");
 const RAGService = require("../../rag/ragService");
 const AgentService = require("../../agents/AgentService");
 
+const executeAgent = require("../../agents/executeAgent");
+const { createPendingAgentResult } = require("../../agents/agentResultFactory");
+
 exports.fullPipeline = async (req, res) => {
   try {
     const file = req.file;
@@ -9,46 +12,58 @@ exports.fullPipeline = async (req, res) => {
       return res.status(400).json({ error: "No file uploaded" });
     }
 
-    // 1) Ingesta del archivo
-    const { rawText, cleaned, chunks } = await DocumentIngestor.ingest(file);
+    // 1) Ingesta
+    const { cleaned, chunks } = await DocumentIngestor.ingest(file);
 
-    // 2) Indexación en Chroma
-    const total = await RAGService.indexDocument(chunks);
+    // 2) Indexación RAG
+    const chunksIndexed = await RAGService.indexDocument(chunks);
 
-    // 3) Consulta RAG usando los primeros 800 chars reales del documento
+    // 3) Query RAG
     const queryText = cleaned.slice(0, 800);
     const ragContext = await RAGService.query(queryText);
 
-    // 4) Ejecutar agentes EN PARALELO con manejo individual de errores
-    const safe = async (fn) => {
-      try {
-        return await fn();
-      } catch (err) {
-        return { error: err.message };
-      }
+    // 4) Inicializar estados de agentes
+    const agents = {
+      analyst: createPendingAgentResult(),
+      classifier: createPendingAgentResult(),
+      insights: createPendingAgentResult()
     };
 
-    const [analyst, classifier, insights] = await Promise.all([
-      safe(() => AgentService.analyzeDocument(queryText, ragContext)),
-      safe(() => AgentService.classifyDocument(queryText, ragContext)),
-      safe(() => AgentService.generateInsights(queryText, ragContext)),
-    ]);
+    // 5) Ejecutar agentes (aislados, seguros)
+    agents.analyst = await executeAgent(
+      AgentService.analyzeDocument.bind(AgentService),
+      queryText,
+      ragContext
+    );
 
-    // 5) Respuesta final
+    agents.classifier = await executeAgent(
+      AgentService.classifyDocument.bind(AgentService),
+      queryText,
+      ragContext
+    );
+
+    agents.insights = await executeAgent(
+      AgentService.generateInsights.bind(AgentService),
+      queryText,
+      ragContext
+    );
+
+    // 6) Respuesta final profesional
     res.json({
-      file: file.originalname,
-      chunks: chunks.length,
-      chunksIndexed: total,
-      ragContext: ragContext.contextText, // útil para debug
-      agents: {
-        analyst,
-        classifier,
-        insights,
+      status: "success",
+      meta: {
+        file: file.originalname,
+        chunks: chunks.length,
+        chunksIndexed
       },
+      agents
     });
 
   } catch (error) {
     console.error("Pipeline error:", error);
-    res.status(500).json({ error: error.message });
+    res.status(500).json({
+      status: "failed",
+      error: error.message
+    });
   }
 };
